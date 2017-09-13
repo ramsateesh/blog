@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %} | {{blog_entry.title}} {% endblock %}
+{% block content %}
+    <div class="blog_entry">
+        <div class="blog_header">
+            <div class="blog_title">
+                {{blog_entry.title}}
+            </div>
+            <div class="blog_date">
+                {{blog_entry.created}}
+            </div>
+        </div>
+        <div class="blog_content">
+            {{blog_entry.content}}
+        </div>
+    <div>
+{% endblock %}
