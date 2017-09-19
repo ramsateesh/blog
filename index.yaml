@@ -1,0 +1,17 @@
+indexes:
+- kind: Blog
+  properties:
+  - name: user_id
+  - name: created
+    direction: desc
+
+- kind: Comment
+  properties:
+  - name: blog_id
+  - name: created
+    direction: desc
+
+- kind: Like
+  properties:
+  - name: blog_id
+  - name: user_id

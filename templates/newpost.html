@@ -1,11 +1,17 @@
 {% extends "layout.html" %}
 {% block title %} | New Blog Post {% endblock %}
 {% block content %}
-    <form action="/newpost" method="POST">
-        <label for="title">Title</label>
-        <input id="title" name="subject" type="text" value="{{blog_entry.title}}" ><br/>
-        <label for="blog_text">Text</label>
-        <textarea id="blog_text" name="content">{{blog_entry.blog_text}}</textarea><br/>
-        <input type="submit" name="Submit" value="Submit">
-    </form>
+    <div class="card m-3 p-3">
+        <div class="card-header">
+            New Blog Post
+        </div>
+        <div class="card-body">
+            <form class="form-group" action="/newpost" method="POST">
+                <label for="title">Title</label>
+                <input class="form-control" id="title" name="subject" type="text" value="{{blog_entry.title}}" ><br/>
+                <label for="blog_text">Text</label>
+                <textarea class="form-control" id="blog_text" name="content">{{blog_entry.content}}</textarea><br/>
+                <input class="btn btn-primary" type="submit" name="Submit" value="Submit">
+            </form>
+        </div>
 {% endblock %}

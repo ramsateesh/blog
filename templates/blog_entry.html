@@ -1,17 +1,41 @@
 {% extends "layout.html" %}
-{% block title %} | {{blog_entry.title}} {% endblock %}
+{% block title %}{{blog_entry.title}}{% endblock %}
 {% block content %}
-    <div class="blog_entry">
-        <div class="blog_header">
-            <div class="blog_title">
-                {{blog_entry.title}}
-            </div>
-            <div class="blog_date">
-                {{blog_entry.created}}
-            </div>
+    <div class="card m-3 p-3">
+        <div class="card-header">
+            {{blog_entry.title}}
         </div>
-        <div class="blog_content">
-            {{blog_entry.content}}
+        <div class="card-body">
+            <p class="card-text">{{blog_entry.content}}</p>
         </div>
-    <div>
+        <div class="card-footer text-muted small-text">{{blog_entry.created}}</div>
+    </div>
+    <hr class="my-4">
+    {% if user.key.id() != blog_entry.user_id %}
+        <div class="form-group">
+            <form action="/likeunlike" method="POST">
+                <input type="radio" class="form-check" name="like" value="1">I Like This
+                <input type="radio" class="form-check" name="like" value="0">I don't Like This
+                <input type="hidden" value="{{blog_entry.key.id()}}">
+                <input type="hidden" value="{{user.key.id()}}">
+                <input type="Submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+        <hr class="my-4">
+        <div class="form-group">
+            <form action="/addcomment" method="POST">
+                <textarea class="form-control" name="comment" rows="3"></textarea>
+                <input type="hidden" value="{{blog_entry.key.id()}}">
+                <input type="hidden" value="{{user.key.id()}}">
+                <input type="Submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+    {% endif %}
+    {% for comment in comments %}
+        <div class="comment card">
+            <h4 class="comment_user card-title">{{comment.username}}</h4>
+            <h6 class="comment_date card-subtitle mb-2 text-muted">{{comment.created}}</h6>
+            <p class="comment_text card-text">{{commnet.comment.text}}</p>
+        </div>
+    {% endfor %}
 {% endblock %}

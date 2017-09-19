@@ -1,19 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
     {% for blog_entry in blog_entries %}
-    <div class="blog_entry">
-        <div class="blog_header">
-            <div class="blog_title">
-                {{blog_entry.title}}
-            </div>
-            <div class="blog_date">
-                {{blog_entry.created}}
-            </div>
+    <div class="card m-3 p-3">
+        <div class="card-header">
+            {{blog_entry.title}}
         </div>
-        <div class="blog_content">
-            {{blog_entry.blog_text}}
+        <div class="card-body">
+            <p class="card-text">{{blog_entry.content}}</p>
         </div>
-        <hr>
-    <div>
+        <div class="card-footer text-muted small-text">{{blog_entry.created}}</div>
+    </div>
     {% endfor %}
 {% endblock %}
