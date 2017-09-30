@@ -1,6 +1,11 @@
 import webapp2
 
 from user import UserHandler
+from user.login import LoginHandler
+from user.logout import LogoutHandler
+from user.signup import SignupHandler
+import blog
+import base
 
 from models import utils
 import models
@@ -81,13 +86,13 @@ class AddCommentHandler(BlogHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/', BlogHandler),
+    ('/', blog.BlogHandler),
     ('/login', LoginHandler),
     ('/signup', SignupHandler),
     ('/logout', LogoutHandler),
-    ('/newpost', BlogPostHandler),
-    ('/blog/(\d+)', BlogPageHandler),
+    ('/newpost', blog.BlogPostHandler),
+    ('/blog/(\d+)', blog.BlogPageHandler),
 ], debug=True)
 
-app.error_handlers[404] = handle_404
-app.error_handlers[500] = handle_500
+app.error_handlers[404] = base.handle_404
+app.error_handlers[500] = base.handle_500

@@ -41,8 +41,8 @@ class User(db.Model):
 
 
 class Blog(db.Model):
-     title = db.StringProperty(required = True)
-     content = db.TextProperty()
+     title = db.StringProperty(required = True, default="")
+     content = db.TextProperty(default="")
      user_id = db.IntegerProperty(required = True)
      likes = db.IntegerProperty(required = True, default = 0)
      created = db.DateTimeProperty(auto_now_add=True)

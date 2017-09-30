@@ -3,6 +3,9 @@ import webapp2
 from models import utils
 import models
 
+from base import Handler
+
+
 class UserHandler(Handler):
     USER_COOKIE_KEY = "user_id"
 

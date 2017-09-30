@@ -1,7 +1,7 @@
-from user import UserHandler
-
-import from models import utils
+from models import utils
 import models
+
+from user import UserHandler
 
 
 class SignupHandler(UserHandler):
