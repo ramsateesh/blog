@@ -10,8 +10,3 @@ indexes:
   - name: blog_id
   - name: created
     direction: desc
-
-- kind: Like
-  properties:
-  - name: blog_id
-  - name: user_id

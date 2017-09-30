@@ -6,6 +6,7 @@ import utils
 class User(db.Model):
     name = db.StringProperty(required = True)
     pw_hash = db.StringProperty(required = True)
+    liked_blogs = db.StringProperty(default = "")
     email = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
 
@@ -43,6 +44,7 @@ class Blog(db.Model):
      title = db.StringProperty(required = True)
      content = db.TextProperty()
      user_id = db.IntegerProperty(required = True)
+     likes = db.IntegerProperty(required = True, default = 0)
      created = db.DateTimeProperty(auto_now_add=True)
 
 
@@ -58,19 +60,6 @@ class Blog(db.Model):
          if user_id is None:
              return None
          return Blog.query(Blog.user_id == user_id).fetch()
-
-
-class Like(db.Model):
-    blog_id = db.IntegerProperty(required = True)
-    user_id = db.IntegerProperty(required = True)
-    like = db.BooleanProperty()
-
-    @classmethod
-    def by_blog_id_and_user_id(cls, user_id, blog_id):
-        if user_id is None or blog_id is None:
-            return None
-        else:
-            return Like.query(ndb.AND(Like.user_id == user_id, Like.blog_id == blog_id)).get()
 
 
 class Comment(db.Model):
