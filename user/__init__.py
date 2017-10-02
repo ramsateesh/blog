@@ -1,4 +1,5 @@
 import webapp2
+import logging
 
 from models import utils
 import models
@@ -24,6 +25,7 @@ class UserHandler(Handler):
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         user_id = self.read_cookie(UserHandler.USER_COOKIE_KEY)
+        logging.debug("User ID : %s" % user_id)
         self.user = None
         if user_id is not None:
             self.user = models.User.by_id(user_id)

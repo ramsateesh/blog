@@ -3,7 +3,7 @@
     {% for blog_entry in blog_entries %}
     <div class="card m-3 p-3">
         <div class="card-header">
-            {{blog_entry.title}}
+            {{blog_entry.title}}{% if user.key.id() == blog_entry.user_id %} (<a href="/blog/edit/{{blog_entry.key.id()}}">Edit</a>){% endif %}
         </div>
         <div class="card-body">
             <p class="card-text">{{blog_entry.content}}</p>

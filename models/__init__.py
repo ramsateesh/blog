@@ -61,6 +61,23 @@ class Blog(db.Model):
              return None
          return Blog.query(Blog.user_id == user_id).fetch()
 
+     @classmethod
+     def delete_by_id(cls, uid):
+         Comment.delete_by_blog_id(uid)
+         Blog.by_id(uid).key.delete()
+
+     @classmethod
+     def add_like(cls, uid):
+         blog = Blog.by_id(uid)
+         blog.likes = blog.likes + 1
+         blog.put()
+
+     @classmethod
+     def remove_like(cls, uid):
+         blog = Blog.by_id(uid)
+         blog.likes = blog.likes - 1
+         blog.put()
+
 
 class Comment(db.Model):
     blog_id = db.IntegerProperty(required = True)
@@ -70,8 +87,23 @@ class Comment(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
 
     @classmethod
+    def by_id(cls, uid):
+        if uid is None:
+            return None
+        uid = long(uid)
+        return Comment.get_by_id(uid)
+
+    @classmethod
     def by_blog_id(cls, blog_id):
         if blog_id is None:
             return None
 
         return Comment.query(Comment.blog_id == long(blog_id)).fetch()
+
+    @classmethod
+    def delete_by_blog_id(cls, blog_id):
+        comments = Comment.by_blog_id(blog_id)
+        comment_keys = []
+        for comment in comments:
+            comment_keys.append(comment.key)
+        db.delete_multi(comment_keys)

@@ -19,7 +19,10 @@ class LoginHandler(UserHandler):
                     form_validated = form_validated)
 
     def get(self):
-        self.render_login()
+        if self.user is None:
+            self.render_login()
+        else:
+            self.redirect("/")
 
     def post(self):
         username = self.request.get("username")
