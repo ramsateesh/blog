@@ -19,19 +19,19 @@ Step 4 of above section should be replaced with 'dev_server.py .'
 
 # Access the Blogger
 
-Locally you can access the blogger at [http://localhost:8080/]http://localhost:8080/
+Locally you can access the blogger at http://localhost:8080/
 
 ## Signup 
 
-Click on [Sign Up]http://localhost:8080/signup
+Click on http://localhost:8080/signup
 
 ## Login
 
-Click on [Login]http://localhost:8080/login
+Click on http://localhost:8080/login
 
 ## Logout
 
-Click on [Logout]http://localhost:8080/logout
+Click on http://localhost:8080/logout
 
 ## New Blog Post
 
@@ -41,7 +41,7 @@ To publish a new post click on [New Post]http://localhost:8080/blog/newpost
 
 To Edit any blog that you published
 
-1. GO TO [http://localhost:8080/]http://localhost:8080/
+1. GO TO http://localhost:8080/
 2. click on Edit link against the blog Title
 
 ## Delete Blog Post
