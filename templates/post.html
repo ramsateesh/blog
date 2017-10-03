@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
-{% block title %} | {% if not blog_entry.key.id() %}New Blog Post{% else %}{{blog_entry.title}}{% endif %} {% endblock %}
+{% block title %} | {% if not blog_entry.key %}New Blog Post{% else %}{{blog_entry.title}}{% endif %} {% endblock %}
 {% block content %}
     <div class="card m-3 p-3">
         <div class="card-header">
-            {% if not blog_entry.key.id() %}New Blog Post{% endif %}{% if error %}<span class="invalid-feedback">({{error}})</span><br/>{% endif %}
+            {% if not blog_entry.key %}New Blog Post{% endif %}{% if error %}<span class="invalid-feedback">({{error}})</span><br/>{% endif %}
         </div>
         <div class="card-body">
             <form class="form-group" action="/blog" method="POST">
@@ -11,7 +11,7 @@
                 <input class="form-control" id="title" name="subject" type="text" value="{{blog_entry.title}}" ><br/>
                 <label for="blog_text">Text</label>
                 <textarea class="form-control" id="blog_text" name="content">{{blog_entry.content}}</textarea><br/>
-                {% if blog_entry.key.id() %}
+                {% if blog_entry.key %}
                     <input type="hidden" name="blog_id" value="{{blog_entry.key.id()}}">
                     <input type="hidden" name="user_id" value="{{blog_entry.user_id}}">
                 {% endif %}

@@ -16,15 +16,15 @@
             <a href="/blog/like/{{blog_entry.key.id()}}">like</a>({{blog_entry.likes}})&nbsp;&nbsp;<a href="/blog/unlike/{{blog_entry.key.id()}}">unlike</a>
         </div>
         <hr class="my-3 p-3">
-        <div class="form-group">
-            <form action="/blog/comment" method="POST">
-                <textarea class="form-control" name="comment" rows="3"></textarea>
-                <input type="hidden" name="blog_id" value="{{blog_entry.key.id()}}">
-                <input type="hidden" name="user_id" value="{{user.key.id()}}">
-                <input type="Submit" class="btn btn-primary m-3 p-3" value="Submit">
-            </form>
-        </div>
     {% endif %}
+    <div class="form-group">
+        <form action="/blog/comment" method="POST">
+            <textarea class="form-control" name="comment" rows="3"></textarea>
+            <input type="hidden" name="blog_id" value="{{blog_entry.key.id()}}">
+            <input type="hidden" name="user_id" value="{{user.key.id()}}">
+            <input type="Submit" class="btn btn-primary m-3 p-3" value="Submit">
+        </form>
+    </div>
     {% for comment in comments %}
         {% if user.key.id() == comment.user_id %}
             <div class="form-group">

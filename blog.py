@@ -46,7 +46,8 @@ class BlogPostHandler(UserHandler):
     def get(self):
        if self.user is None:
             self.redirect("/login")
-       self.render_post(blog_entry = models.Blog())
+       else:
+           self.render_post(blog_entry = models.Blog())
 
     def isValidData(self, title, text):
         if title is None or title == "":
@@ -56,33 +57,34 @@ class BlogPostHandler(UserHandler):
     def post(self):
         if self.user is None:
             self.redirect("/login")
-        blog_id = self.request.get('blog_id')
-        user_id = self.request.get('user_id')
-        title = self.request.get('subject')
-        blog_text = self.request.get('content')
-
-        if blog_id is not None:
-            blog_entry = models.Blog(id=int(blog_id))
         else:
-            blog_entry = models.Blog()
+            blog_id = self.request.get('blog_id')
+            user_id = self.request.get('user_id')
+            title = self.request.get('subject')
+            blog_text = self.request.get('content')
 
-        if user_id is not None:
-            user_id = int(user_id)
+            if blog_id is not None and blog_id != '':
+                blog_entry = models.Blog.by_id(int(blog_id))
+            else:
+                blog_entry = models.Blog()
 
-        if user_id != self.user.key.id():
-            self.abort(401)
+            if user_id is not None and user_id != '':
+                user_id = int(user_id)
 
-        if self.isValidData(title, blog_text):
-            blog_entry.title = title
-            blog_entry.content = blog_text
-            blog_entry.user_id = self.user.key.id()
-            blog_entry = blog_entry.put().get()
-            self.redirect("/blog/%d" % blog_entry.key.id())
-        else:
-            self.render_post(
-                blog_entry = blog_entry,
-                error = "You need a valid title and blog content."
-            )
+                if user_id != self.user.key.id():
+                    self.abort(401)
+
+            if self.isValidData(title, blog_text):
+                blog_entry.title = title
+                blog_entry.content = blog_text
+                blog_entry.user_id = self.user.key.id()
+                blog_entry = blog_entry.put().get()
+                self.redirect("/blog/%d" % blog_entry.key.id())
+            else:
+                self.render_post(
+                    blog_entry = blog_entry,
+                    error = "You need a valid title and blog content."
+                )
 
 
 class BlogEditHandler(BlogPostHandler):
@@ -90,56 +92,71 @@ class BlogEditHandler(BlogPostHandler):
         blog_id = int(blog_id)
         if self.user is None:
             self.redirect("/login")
+        else:
+            blog_entry = blog = models.Blog.by_id(blog_id)
 
-        blog_entry = blog = models.Blog.by_id(blog_id)
+            if blog_entry.user_id != self.user.key.id():
+                self.abort(401)
 
-        if blog_entry.user_id != self.user.key.id():
-            self.abort(401)
-
-        self.render_post(blog_entry = blog_entry)
+            self.render_post(blog_entry = blog_entry)
 
 
 class BlogDeleteHandler(BlogHandler):
     def get(self, blog_id):
-        models.Blog.delete_by_id(blog_id)
-        self.redirect("/")
+        blog = models.Blog.by_id(blog_id)
+        if self.user.key.id() != blog.user_id:
+            self.abort(401)
+        else:
+            models.Blog.delete_by_id(blog_id)
+            self.redirect("/")
 
 
 class BlogLikeHandler(BlogHandler):
     def get(self, blog_id):
-        models.Blog.add_like(int(blog_id))
-        self.redirect("/blog/%d" % int(blog_id))
+        blog_id = int(blog_id)
+
+        blog = models.Blog.by_id(blog_id)
+
+        if blog.user_id == self.user.key.id():
+            self.abort(401)
+        else:
+            models.Blog.add_like(int(blog_id))
+            self.redirect("/blog/%d" % blog_id)
 
 
 class BlogUnlikeHandler(BlogHandler):
     def get(self, blog_id):
-        models.Blog.remove_like(int(blog_id))
-        self.redirect("/blog/%d" % int(blog_id))
+        blog_id = int(blog_id)
+
+        blog = models.Blog.by_id(blog_id)
+
+        if blog.user_id == self.user.key.id():
+            self.abort(401)
+        else:
+            models.Blog.remove_like(int(blog_id))
+            self.redirect("/blog/%d" % blog_id)
 
 
 class AddCommentHandler(BlogHandler):
     def post(self):
         if self.user is None:
             self.redirect("/login")
+        else:
 
-        blog_id = self.request.get('blog_id')
-        user_id = self.request.get('user_id')
+            blog_id = self.request.get('blog_id')
+            user_id = self.request.get('user_id')
 
-        c_text = self.request.get('comment')
-        c_user = models.User.get_by_id(int(user_id))
+            c_text = self.request.get('comment')
+            c_user = models.User.get_by_id(int(user_id))
 
-        blog = models.Blog.by_id(int(blog_id))
-        if blog.user_id == self.user.key.id() or blog.user_id == user_id:
-            self.abort(401)
+            comment = models.Comment()
+            comment.blog_id = int(blog_id)
+            comment.user_id = int(user_id)
+            comment.comment_text = c_text
+            comment.username = c_user.name
+            comment.put()
 
-        comment = models.Comment()
-        comment.blog_id = int(blog_id)
-        comment.user_id = int(user_id)
-        comment.comment_text = c_text
-        comment.username = c_user.name
-        comment.put()
-
-        self.redirect("/blog/%d" % int(blog_id))
+            self.redirect("/blog/%d" % int(blog_id))
         
 
 
@@ -147,26 +164,22 @@ class EditCommentHandler(BlogHandler):
     def post(self):
         if self.user is None:
             self.redirect("/login")
-
-        blog_id = long(self.request.get('blog_id'))
-        user_id = long(self.request.get('user_id'))
-        c_id = long(self.request.get('comment_id'))
-
-        blog = models.Blog.by_id(blog_id)
-        if blog.user_id == self.user.key.id() or blog.user_id == user_id:
-            self.abort(401)
-
-        c_text = self.request.get('comment')
-        c_user = models.User.get_by_id(int(user_id))
-
-        comment = models.Comment.by_id(c_id)
-        if comment.blog_id != blog_id or comment.user_id != user_id:
-            self.abort(401)
         else:
-            comment.comment_text = c_text
-            comment.username = c_user.name
-            comment.put()
-            self.redirect("/blog/%d" % int(blog_id))
+            blog_id = long(self.request.get('blog_id'))
+            user_id = long(self.request.get('user_id'))
+            c_id = long(self.request.get('comment_id'))
+
+            c_text = self.request.get('comment')
+            c_user = models.User.get_by_id(int(user_id))
+
+            comment = models.Comment.by_id(c_id)
+            if comment.blog_id != blog_id or comment.user_id != user_id:
+                self.abort(401)
+            else:
+                comment.comment_text = c_text
+                comment.username = c_user.name
+                comment.put()
+                self.redirect("/blog/%d" % int(blog_id))
 
 
 class DeleteCommentHandler(BlogHandler):
@@ -186,6 +199,7 @@ app = webapp2.WSGIApplication([
     ('/signup', SignupHandler),
     ('/logout', LogoutHandler),
     ('/blog', BlogPostHandler),
+    ('/blog/newpost', BlogPostHandler),
     ('/blog/(\d+)', BlogPageHandler),
     ('/blog/edit/(\d+)', BlogEditHandler),
     ('/blog/delete/(\d+)', BlogDeleteHandler),
